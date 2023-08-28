@@ -1,0 +1,50 @@
+Start
+    Read the first input line
+    If OPCODE='START' then
+    Begin
+        Save #[OPERAND] as starting address
+        Initialize LOCCTR to starting address
+        Write line to intermediate file
+        Read the next input line
+    End
+    Else
+        Initialize LOCCTR to 0
+    
+    While OPCODE is not equal to 'END'
+    Begin
+        If line is not a comment line then
+        Begin
+            If there is a symbol in the LABEL field then
+            Begin
+                Search SYMTAB for LABEL
+                If found then
+                    Set error flag
+                Else
+                    Insert {LABEL,LOCCTR} into SYMTAB
+            End
+            
+            Search OPTAB for OPCODE
+            If found then
+                Add 3 to LOCCTR
+            Else if OPCODE='WORD' then
+                Add 3 to LOCCTR
+            Else if OPCODE='RESW' then
+                Add 3*#[OPERAND] to LOCCTR
+            Else if OPCODE='RESB' then
+                Add #[OPERAND] to LOCCTR
+            Else if OPCODE = 'BYTE' then
+            Begin
+                Find length of constant in bytes
+                Add length to LOCCTR
+            End
+            Else
+                Set error flag
+        End
+    
+        Write line to intermediate file
+        Read next input line
+    End
+    
+    Write last line to intermediate file
+    (Save LOCCTR - starting address) as program length
+End
